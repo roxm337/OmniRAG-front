@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-body: "Inter", "Avenir Next", "Segoe UI", sans-serif;
+    --font-heading: "Sora", "Avenir Next", "Segoe UI", sans-serif;
+    --background: 210 20% 98%;
+    --foreground: 206 52% 13%;
+    --card: 0 0% 100%;
+    --card-foreground: 206 52% 13%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 206 52% 13%;
+    --primary: 193 88% 34%;
+    --primary-foreground: 193 100% 97%;
+    --secondary: 210 16% 93%;
+    --secondary-foreground: 206 52% 13%;
+    --muted: 210 16% 93%;
+    --muted-foreground: 205 16% 37%;
+    --accent: 210 16% 93%;
+    --accent-foreground: 206 52% 13%;
+    --destructive: 354 58% 47%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 210 18% 87%;
+    --input: 210 18% 87%;
+    --ring: 193 88% 34%;
+    --radius: 0.5rem;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 206 52% 13%;
+    --sidebar-primary: 193 88% 34%;
+    --sidebar-primary-foreground: 193 100% 97%;
+    --sidebar-accent: 210 16% 95%;
+    --sidebar-accent-foreground: 206 52% 13%;
+    --sidebar-border: 210 18% 90%;
+    --sidebar-ring: 193 88% 34%;
+  }
+
+  .dark {
+    --background: 210 20% 7%;
+    --foreground: 210 20% 96%;
+    --card: 210 18% 10%;
+    --card-foreground: 210 20% 96%;
+    --popover: 210 18% 10%;
+    --popover-foreground: 210 20% 96%;
+    --primary: 193 80% 42%;
+    --primary-foreground: 210 20% 7%;
+    --secondary: 210 16% 16%;
+    --secondary-foreground: 210 20% 96%;
+    --muted: 210 16% 16%;
+    --muted-foreground: 210 12% 55%;
+    --accent: 210 16% 16%;
+    --accent-foreground: 210 20% 96%;
+    --destructive: 354 58% 52%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 210 14% 18%;
+    --input: 210 14% 18%;
+    --ring: 193 80% 42%;
+    --sidebar-background: 210 18% 8%;
+    --sidebar-foreground: 210 20% 96%;
+    --sidebar-primary: 193 80% 42%;
+    --sidebar-primary-foreground: 210 20% 7%;
+    --sidebar-accent: 210 16% 14%;
+    --sidebar-accent-foreground: 210 20% 96%;
+    --sidebar-border: 210 14% 16%;
+    --sidebar-ring: 193 80% 42%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-heading), "Avenir Next", sans-serif;
+    letter-spacing: -0.02em;
+  }
+}
