@@ -17,7 +17,6 @@ import { useTheme } from "next-themes";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 const navItems = [
@@ -36,8 +35,9 @@ export function Sidebar() {
 
   return (
     <aside className="hidden lg:flex w-64 flex-col border-r border-sidebar-border bg-sidebar shrink-0">
-      <div className="flex h-14 items-center gap-2 px-4 border-b border-sidebar-border">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground text-sm font-bold">
+      {/* Branding */}
+      <div className="flex h-14 items-center gap-2.5 px-4 border-b border-sidebar-border">
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground text-sm font-bold shadow-sm">
           O
         </div>
         <span className="font-heading text-lg font-bold tracking-tight">
@@ -45,7 +45,8 @@ export function Sidebar() {
         </span>
       </div>
 
-      <ScrollArea className="flex-1 py-3">
+      {/* Navigation */}
+      <ScrollArea className="flex-1 py-4">
         <nav className="grid gap-1 px-3">
           {navItems.map((item) => {
             const isActive =
@@ -57,26 +58,36 @@ export function Sidebar() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                  "group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200",
                   isActive
-                    ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                    ? "bg-primary/10 text-primary shadow-sm"
                     : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
                 )}
               >
-                <item.icon className="h-4 w-4" />
+                <item.icon
+                  className={cn(
+                    "h-4 w-4 transition-transform duration-200",
+                    isActive
+                      ? "text-primary"
+                      : "text-sidebar-foreground/50 group-hover:text-sidebar-foreground/80 group-hover:scale-110"
+                  )}
+                />
                 {item.label}
+                {isActive && (
+                  <div className="ml-auto h-1.5 w-1.5 rounded-full bg-primary" />
+                )}
               </Link>
             );
           })}
         </nav>
       </ScrollArea>
 
-      <div className="mt-auto border-t border-sidebar-border p-3">
-        <Separator className="mb-3" />
+      {/* Theme Toggle */}
+      <div className="border-t border-sidebar-border p-3">
         <Button
           variant="ghost"
           size="sm"
-          className="w-full justify-start gap-2 text-sidebar-foreground/70"
+          className="w-full justify-start gap-2 text-sidebar-foreground/70 hover:text-sidebar-foreground transition-all duration-200"
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
         >
           <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
