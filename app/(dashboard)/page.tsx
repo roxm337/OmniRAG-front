@@ -1,5 +1,6 @@
 "use client";
 
+import { Globe, LayoutDashboard, Settings2, Shield } from "lucide-react";
 import { useAppStore } from "@/lib/store/app-store";
 import { Input } from "@/components/ui/input";
 import {
@@ -12,7 +13,6 @@ import {
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -24,42 +24,65 @@ import { AdminBotManager } from "@/components/dashboard/admin-bot-manager";
 import type { LlmProvider } from "@/lib/types";
 
 export default function DashboardPage() {
-  const { apiBaseUrl, setApiBaseUrl, defaultProvider, setDefaultProvider, currentBotId } = useAppStore();
+  const {
+    apiBaseUrl,
+    setApiBaseUrl,
+    defaultProvider,
+    setDefaultProvider,
+    currentBotId,
+  } = useAppStore();
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      <div>
-        <h2 className="text-2xl font-bold tracking-tight">Dashboard</h2>
-        <p className="text-muted-foreground">
-          Overview of your OmniRAG workspace.
-        </p>
+    <div className="space-y-8 animate-fade-in">
+      {/* Header */}
+      <div className="flex items-center gap-3">
+        <div className="rounded-xl bg-primary/10 p-3">
+          <LayoutDashboard className="h-6 w-6 text-primary" />
+        </div>
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight">Dashboard</h2>
+          <p className="text-sm text-muted-foreground">
+            Overview of your OmniRAG workspace
+          </p>
+        </div>
       </div>
 
+      {/* Stats */}
       <StatsOverview />
 
+      {/* Health + Settings */}
       <div className="grid gap-6 lg:grid-cols-2">
         <HealthCard />
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm font-medium">Settings</CardTitle>
-            <CardDescription>Backend connection and provider config</CardDescription>
+
+        <Card className="transition-all duration-200 hover:shadow-md">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium flex items-center gap-2">
+              <div className="rounded-lg bg-violet-100 dark:bg-violet-900/30 p-2">
+                <Settings2 className="h-4 w-4 text-violet-600 dark:text-violet-400" />
+              </div>
+              Settings
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label className="text-xs">Backend URL</Label>
-              <Input
-                value={apiBaseUrl}
-                onChange={(e) => setApiBaseUrl(e.target.value)}
-                placeholder="http://localhost:8000"
-              />
+              <Label className="text-xs font-medium">Backend URL</Label>
+              <div className="relative">
+                <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  value={apiBaseUrl}
+                  onChange={(e) => setApiBaseUrl(e.target.value)}
+                  placeholder="http://localhost:8000"
+                  className="pl-9 font-mono text-sm transition-all duration-200 focus:ring-2 focus:ring-primary/20"
+                />
+              </div>
             </div>
             <div className="space-y-2">
-              <Label className="text-xs">Default Provider</Label>
+              <Label className="text-xs font-medium">Default Provider</Label>
               <Select
                 value={defaultProvider}
                 onValueChange={(v) => setDefaultProvider(v as LlmProvider)}
               >
-                <SelectTrigger>
+                <SelectTrigger className="transition-all duration-200 focus:ring-2 focus:ring-primary/20">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -69,27 +92,40 @@ export default function DashboardPage() {
               </Select>
             </div>
             <div className="space-y-2">
-              <Label className="text-xs">Active Bot ID</Label>
+              <Label className="text-xs font-medium">Active Bot ID</Label>
               <Input
                 value={currentBotId}
                 readOnly
                 placeholder="No bot selected"
+                className="font-mono text-sm bg-muted/40"
               />
             </div>
           </CardContent>
         </Card>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-sm font-medium">Admin & Bot Management</CardTitle>
-          <CardDescription>Login, create bots, choose active bot, and configure provider settings</CardDescription>
+      {/* Admin & Bot Management */}
+      <Card className="transition-all duration-200 hover:shadow-md">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-sm font-medium flex items-center gap-2">
+            <div className="rounded-lg bg-amber-100 dark:bg-amber-900/30 p-2">
+              <Shield className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+            </div>
+            <div>
+              <span className="block">Admin & Bot Management</span>
+              <span className="text-xs text-muted-foreground font-normal">
+                Login, create bots, choose active bot, and configure provider
+                settings
+              </span>
+            </div>
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <AdminBotManager />
         </CardContent>
       </Card>
 
+      {/* Recent Activity */}
       <RecentActivity />
     </div>
   );
