@@ -7,3 +7,11 @@ yarn-error.log*
 pnpm-debug.log*
 .env.local
 .env
+
+.DS_Store
+.env.local
+.env
+.next
+node_modules
+.DS_Store
+**/ .DS_Store
