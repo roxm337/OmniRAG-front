@@ -95,7 +95,6 @@ export function WidgetConfigManager({ botId }: WidgetConfigManagerProps) {
     setPreviewUrl(null);
   }, [botId]);
 
-
   async function handleSave() {
     if (!adminToken) return;
     setSaving(true);
@@ -156,9 +155,16 @@ export function WidgetConfigManager({ botId }: WidgetConfigManagerProps) {
     try {
       if (adminToken) {
         try {
-          const history = await getBotHistory(apiBaseUrl, adminToken, botId, 1);
+          const history = await getBotHistory(
+            apiBaseUrl,
+            adminToken,
+            botId,
+            1
+          );
           if (history.ingestions.length === 0) {
-            toast.warning("This bot has no ingested documents yet. Preview may answer: I don't know.");
+            toast.warning(
+              "This bot has no ingested documents yet. Preview may answer: I don't know."
+            );
           }
         } catch {
           // non-blocking
@@ -205,61 +211,69 @@ export function WidgetConfigManager({ botId }: WidgetConfigManagerProps) {
   if (loading) {
     return (
       <Card>
-        <CardContent className="flex justify-center py-8">
-          <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+        <CardContent className="flex justify-center py-12">
+          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
         </CardContent>
       </Card>
     );
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
-            <Palette className="h-4 w-4" /> Widget Configuration
+            <div className="rounded-lg bg-violet-100 dark:bg-violet-900/30 p-2">
+              <Palette className="h-4 w-4 text-violet-600 dark:text-violet-400" />
+            </div>
+            Widget Configuration
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+        <CardContent className="space-y-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div className="space-y-2">
-              <Label>Title</Label>
+              <Label className="text-sm font-medium">Title</Label>
               <Input
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
+                className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
               />
             </div>
             <div className="space-y-2">
-              <Label>Subtitle</Label>
+              <Label className="text-sm font-medium">Subtitle</Label>
               <Input
                 value={subtitle}
                 onChange={(e) => setSubtitle(e.target.value)}
+                className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div className="space-y-2">
-              <Label>Primary Color</Label>
-              <div className="flex gap-2">
-                <input
-                  type="color"
-                  value={primaryColor}
-                  onChange={(e) => setPrimaryColor(e.target.value)}
-                  className="h-9 w-12 rounded border cursor-pointer"
-                />
+              <Label className="text-sm font-medium">Primary Color</Label>
+              <div className="flex gap-2.5">
+                <div className="relative">
+                  <input
+                    type="color"
+                    value={primaryColor}
+                    onChange={(e) => setPrimaryColor(e.target.value)}
+                    className="h-9 w-14 rounded-lg border cursor-pointer bg-transparent"
+                  />
+                </div>
                 <Input
                   value={primaryColor}
                   onChange={(e) => setPrimaryColor(e.target.value)}
+                  className="font-mono transition-all duration-200 focus:ring-2 focus:ring-primary/20"
                 />
               </div>
             </div>
             <div className="space-y-2">
-              <Label>Position</Label>
+              <Label className="text-sm font-medium">Position</Label>
               <select
                 value={position}
                 onChange={(e) => setPosition(e.target.value)}
-                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm"
+                className="flex h-9 w-full rounded-lg border border-input bg-transparent px-3 py-1 text-sm transition-all duration-200 focus:ring-2 focus:ring-primary/20 focus:outline-none"
               >
                 <option value="bottom-right">Bottom Right</option>
                 <option value="bottom-left">Bottom Left</option>
@@ -268,35 +282,42 @@ export function WidgetConfigManager({ botId }: WidgetConfigManagerProps) {
           </div>
 
           <div className="space-y-2">
-            <Label>Welcome Message</Label>
+            <Label className="text-sm font-medium">Welcome Message</Label>
             <Textarea
               value={welcomeMessage}
               onChange={(e) => setWelcomeMessage(e.target.value)}
               rows={2}
+              className="resize-none transition-all duration-200 focus:ring-2 focus:ring-primary/20"
             />
           </div>
 
           <div className="space-y-2">
-            <Label>Input Placeholder</Label>
+            <Label className="text-sm font-medium">Input Placeholder</Label>
             <Input
               value={placeholder}
               onChange={(e) => setPlaceholder(e.target.value)}
+              className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
             />
           </div>
 
           <div className="space-y-2">
-            <Label>Allowed Origins</Label>
+            <Label className="text-sm font-medium">Allowed Origins</Label>
             <Input
               value={allowedOrigins}
               onChange={(e) => setAllowedOrigins(e.target.value)}
               placeholder="* or https://example.com,https://app.example.com"
+              className="font-mono text-sm transition-all duration-200 focus:ring-2 focus:ring-primary/20"
             />
             <p className="text-xs text-muted-foreground">
               Comma-separated list of allowed origins, or * for all
             </p>
           </div>
 
-          <Button onClick={handleSave} disabled={saving}>
+          <Button
+            onClick={handleSave}
+            disabled={saving}
+            className="transition-all duration-200"
+          >
             {saving ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : (
@@ -309,10 +330,13 @@ export function WidgetConfigManager({ botId }: WidgetConfigManagerProps) {
 
       {/* Embed Code */}
       {embedCode && (
-        <Card>
+        <Card className="animate-scale-in">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base">
-              <Code className="h-4 w-4" /> Embed Code
+              <div className="rounded-lg bg-slate-100 dark:bg-slate-800 p-2">
+                <Code className="h-4 w-4 text-slate-600 dark:text-slate-400" />
+              </div>
+              Embed Code
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
@@ -321,7 +345,7 @@ export function WidgetConfigManager({ botId }: WidgetConfigManagerProps) {
               API Keys tab).
             </p>
             <div className="relative">
-              <pre className="rounded-lg bg-muted p-3 text-xs font-mono overflow-x-auto whitespace-pre-wrap break-all">
+              <pre className="rounded-xl bg-muted/60 p-4 text-xs font-mono overflow-x-auto whitespace-pre-wrap break-all leading-relaxed border">
                 {embedCode.replace(
                   "></script>",
                   `\n  data-api-key="YOUR_API_KEY_HERE"></script>`
@@ -330,7 +354,7 @@ export function WidgetConfigManager({ botId }: WidgetConfigManagerProps) {
               <Button
                 size="sm"
                 variant="outline"
-                className="absolute top-2 right-2"
+                className="absolute top-2.5 right-2.5 gap-1.5"
                 onClick={() =>
                   copyToClipboard(
                     embedCode.replace(
@@ -341,6 +365,7 @@ export function WidgetConfigManager({ botId }: WidgetConfigManagerProps) {
                 }
               >
                 <Copy className="h-3 w-3" />
+                Copy
               </Button>
             </div>
           </CardContent>
@@ -352,21 +377,34 @@ export function WidgetConfigManager({ botId }: WidgetConfigManagerProps) {
         <CardHeader>
           <CardTitle className="flex items-center justify-between text-base">
             <span className="flex items-center gap-2">
-              <ExternalLink className="h-4 w-4" /> Live Preview
+              <div className="rounded-lg bg-emerald-100 dark:bg-emerald-900/30 p-2">
+                <ExternalLink className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+              </div>
+              Live Preview
             </span>
             {previewActive ? (
               <div className="flex items-center gap-2">
-                <span className="flex items-center gap-1.5 text-xs font-medium text-emerald-600">
+                <span className="flex items-center gap-1.5 text-xs font-medium text-emerald-600 dark:text-emerald-400">
                   <span className="relative flex h-2 w-2">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
                   </span>
                   Live
                 </span>
-                <Button size="sm" variant="ghost" onClick={reloadPreview}>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={reloadPreview}
+                  className="h-8 w-8 p-0"
+                >
                   <RefreshCw className="h-3.5 w-3.5" />
                 </Button>
-                <Button size="sm" variant="ghost" onClick={closePreview}>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={closePreview}
+                  className="h-8 w-8 p-0"
+                >
                   <X className="h-3.5 w-3.5" />
                 </Button>
               </div>
@@ -375,7 +413,7 @@ export function WidgetConfigManager({ botId }: WidgetConfigManagerProps) {
         </CardHeader>
         <CardContent>
           {previewActive ? (
-            <div className="relative rounded-lg overflow-hidden border bg-slate-100 dark:bg-slate-800">
+            <div className="relative rounded-xl overflow-hidden border bg-slate-100 dark:bg-slate-800 animate-scale-in">
               <iframe
                 ref={iframeRef}
                 className="w-full border-0"
@@ -385,19 +423,26 @@ export function WidgetConfigManager({ botId }: WidgetConfigManagerProps) {
               />
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/25 bg-muted/30 py-12 px-4">
-              <p className="text-sm text-muted-foreground mb-4 text-center">
-                Launch a live preview to test the chat widget directly here.
-                <br />
-                <span className="text-xs">
-                  An API key will be auto-created if needed.
-                </span>
+            <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-muted-foreground/20 bg-muted/20 py-16 px-4 transition-colors duration-200 hover:border-primary/30 hover:bg-muted/30">
+              <div className="rounded-full bg-muted p-4 mb-4">
+                <Play className="h-6 w-6 text-muted-foreground" />
+              </div>
+              <p className="text-sm text-muted-foreground mb-1 text-center font-medium">
+                Launch a live preview
               </p>
-              <Button onClick={launchPreview} disabled={previewLoading}>
+              <p className="text-xs text-muted-foreground mb-5 text-center">
+                Test the chat widget directly here. An API key will be
+                auto-created if needed.
+              </p>
+              <Button
+                onClick={launchPreview}
+                disabled={previewLoading}
+                className="gap-2 transition-all duration-200"
+              >
                 {previewLoading ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
-                  <Play className="mr-2 h-4 w-4" />
+                  <Play className="h-4 w-4" />
                 )}
                 Launch Preview
               </Button>

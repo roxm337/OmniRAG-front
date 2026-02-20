@@ -1,11 +1,25 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Copy, Key, Loader2, Plus, Trash2 } from "lucide-react";
+import {
+  Copy,
+  Key,
+  Loader2,
+  Plus,
+  Power,
+  PowerOff,
+  Shield,
+  Trash2,
+} from "lucide-react";
 import { toast } from "sonner";
 
 import { useAppStore } from "@/lib/store/app-store";
-import { createApiKey, deleteApiKey, listApiKeys, updateApiKey } from "@/lib/api";
+import {
+  createApiKey,
+  deleteApiKey,
+  listApiKeys,
+  updateApiKey,
+} from "@/lib/api";
 import type { ApiKey } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -45,13 +59,20 @@ export function ApiKeysManager({ botId }: ApiKeysManagerProps) {
     if (!newKeyName.trim() || !adminToken) return;
     setCreating(true);
     try {
-      const res = await createApiKey(apiBaseUrl, adminToken, botId, newKeyName.trim());
+      const res = await createApiKey(
+        apiBaseUrl,
+        adminToken,
+        botId,
+        newKeyName.trim()
+      );
       setCreatedKey(res.key);
       setNewKeyName("");
       await fetchKeys();
       toast.success("API key created");
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to create key");
+      toast.error(
+        err instanceof Error ? err.message : "Failed to create key"
+      );
     } finally {
       setCreating(false);
     }
@@ -88,10 +109,13 @@ export function ApiKeysManager({ botId }: ApiKeysManagerProps) {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
-          <Key className="h-4 w-4" /> API Keys
+          <div className="rounded-lg bg-amber-100 dark:bg-amber-900/30 p-2">
+            <Key className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+          </div>
+          API Keys
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-5">
         {/* Create new key */}
         <div className="flex gap-2">
           <Input
@@ -99,27 +123,52 @@ export function ApiKeysManager({ botId }: ApiKeysManagerProps) {
             value={newKeyName}
             onChange={(e) => setNewKeyName(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleCreate()}
+            className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
           />
-          <Button onClick={handleCreate} disabled={creating || !newKeyName.trim()} size="sm">
-            {creating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+          <Button
+            onClick={handleCreate}
+            disabled={creating || !newKeyName.trim()}
+            size="sm"
+            className="gap-2 shrink-0 transition-all duration-200"
+          >
+            {creating ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Plus className="h-4 w-4" />
+            )}
+            <span className="hidden sm:inline">Create</span>
           </Button>
         </div>
 
         {/* Show newly created key */}
         {createdKey && (
-          <div className="rounded-lg border border-green-200 bg-green-50 dark:bg-green-900/20 dark:border-green-800 p-3 space-y-2">
-            <p className="text-xs font-medium text-green-800 dark:text-green-200">
-              Copy this key now - it won&apos;t be shown again!
-            </p>
+          <div className="rounded-xl border-2 border-emerald-200 bg-emerald-50 dark:bg-emerald-900/20 dark:border-emerald-800 p-4 space-y-3 animate-scale-in">
             <div className="flex items-center gap-2">
-              <code className="flex-1 text-xs bg-white dark:bg-gray-800 rounded p-2 font-mono break-all">
+              <Shield className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+              <p className="text-sm font-medium text-emerald-800 dark:text-emerald-200">
+                Copy this key now &mdash; it won&apos;t be shown again!
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <code className="flex-1 text-xs bg-white dark:bg-gray-800 rounded-lg p-3 font-mono break-all border">
                 {createdKey}
               </code>
-              <Button size="sm" variant="outline" onClick={() => copyToClipboard(createdKey)}>
-                <Copy className="h-3 w-3" />
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => copyToClipboard(createdKey)}
+                className="shrink-0 gap-1.5"
+              >
+                <Copy className="h-3.5 w-3.5" />
+                Copy
               </Button>
             </div>
-            <Button size="sm" variant="ghost" onClick={() => setCreatedKey(null)} className="text-xs">
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => setCreatedKey(null)}
+              className="text-xs text-muted-foreground"
+            >
               Dismiss
             </Button>
           </div>
@@ -127,51 +176,88 @@ export function ApiKeysManager({ botId }: ApiKeysManagerProps) {
 
         {/* Key list */}
         {loading ? (
-          <div className="flex justify-center py-4">
-            <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+          <div className="flex justify-center py-8">
+            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
           </div>
         ) : keys.length === 0 ? (
-          <p className="text-sm text-muted-foreground text-center py-4">
-            No API keys yet. Create one to integrate with external apps.
-          </p>
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <div className="rounded-full bg-muted p-4 mb-3">
+              <Key className="h-6 w-6 text-muted-foreground" />
+            </div>
+            <p className="text-sm font-medium text-muted-foreground mb-1">
+              No API keys yet
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Create one to integrate with external apps
+            </p>
+          </div>
         ) : (
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             {keys.map((key) => (
               <div
                 key={key.id}
-                className="flex items-center justify-between rounded-lg border p-3"
+                className={`flex items-center justify-between rounded-xl border p-4 transition-all duration-200 hover:shadow-sm ${
+                  key.is_active
+                    ? "hover:bg-accent/50"
+                    : "opacity-60 bg-muted/30"
+                }`}
               >
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium">{key.name}</span>
-                    <Badge variant={key.is_active ? "default" : "secondary"}>
-                      {key.is_active ? "Active" : "Disabled"}
-                    </Badge>
+                <div className="space-y-1.5 min-w-0">
+                  <div className="flex items-center gap-2.5">
+                    <span className="text-sm font-semibold">{key.name}</span>
+                    {key.is_active ? (
+                      <Badge className="text-xs bg-emerald-600 hover:bg-emerald-700 gap-1">
+                        <span className="relative flex h-1.5 w-1.5">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75" />
+                          <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-white" />
+                        </span>
+                        Active
+                      </Badge>
+                    ) : (
+                      <Badge variant="secondary" className="text-xs gap-1">
+                        Disabled
+                      </Badge>
+                    )}
                   </div>
-                  <div className="text-xs text-muted-foreground font-mono">
-                    {key.key_prefix}...
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <code className="font-mono">{key.key_prefix}...</code>
                     {key.last_used_at && (
-                      <span className="ml-2">
-                        Last used: {new Date(key.last_used_at).toLocaleDateString()}
-                      </span>
+                      <>
+                        <span className="text-border">&middot;</span>
+                        <span>
+                          Last used:{" "}
+                          {new Date(key.last_used_at).toLocaleDateString()}
+                        </span>
+                      </>
                     )}
                   </div>
                 </div>
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1 shrink-0 ml-3">
                   <Button
                     size="sm"
                     variant="ghost"
                     onClick={() => handleToggle(key)}
+                    className="gap-1.5 text-xs"
                   >
-                    {key.is_active ? "Disable" : "Enable"}
+                    {key.is_active ? (
+                      <>
+                        <PowerOff className="h-3.5 w-3.5" />
+                        <span className="hidden sm:inline">Disable</span>
+                      </>
+                    ) : (
+                      <>
+                        <Power className="h-3.5 w-3.5" />
+                        <span className="hidden sm:inline">Enable</span>
+                      </>
+                    )}
                   </Button>
                   <Button
                     size="sm"
                     variant="ghost"
-                    className="text-destructive"
+                    className="text-destructive hover:text-destructive hover:bg-destructive/10"
                     onClick={() => handleDelete(key.id)}
                   >
-                    <Trash2 className="h-3 w-3" />
+                    <Trash2 className="h-3.5 w-3.5" />
                   </Button>
                 </div>
               </div>
