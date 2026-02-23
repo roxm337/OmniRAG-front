@@ -17,7 +17,6 @@ export default function LoginPage() {
 
   const {
     apiBaseUrl,
-    setApiBaseUrl,
     adminToken,
     setAdminSession,
     setBots,
@@ -25,8 +24,8 @@ export default function LoginPage() {
     addEvent,
   } = useAppStore();
 
-  const [username, setUsername] = useState("admin");
-  const [password, setPassword] = useState("admin12345");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [busyLogin, setBusyLogin] = useState(false);
 
   function getNextPath() {
@@ -88,16 +87,8 @@ export default function LoginPage() {
         <CardContent className="space-y-4">
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
-              <Label>Backend URL</Label>
-              <Input
-                value={apiBaseUrl}
-                onChange={(e) => setApiBaseUrl(e.target.value)}
-                placeholder="http://localhost:8000"
-              />
-            </div>
-            <div className="space-y-2">
               <Label>Username</Label>
-              <Input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="admin" />
+              <Input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username" />
             </div>
             <div className="space-y-2">
               <Label>Password</Label>
