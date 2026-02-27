@@ -67,7 +67,6 @@ export function AdminBotManager() {
   const [newBotDescription, setNewBotDescription] = useState("");
   const [newBotProvider, setNewBotProvider] = useState<LlmProvider>("deepseek");
   const [newBotTemperature, setNewBotTemperature] = useState(0.1);
-  const [newBotTopK, setNewBotTopK] = useState(5);
 
   const selectedBot = useMemo(
     () => bots.find((bot) => bot.id === currentBotId) ?? null,
@@ -78,7 +77,6 @@ export function AdminBotManager() {
   const [editDescription, setEditDescription] = useState("");
   const [editProvider, setEditProvider] = useState<LlmProvider>("deepseek");
   const [editTemperature, setEditTemperature] = useState(0.1);
-  const [editTopK, setEditTopK] = useState(5);
 
   useEffect(() => {
     if (!selectedBot) return;
@@ -86,7 +84,6 @@ export function AdminBotManager() {
     setEditDescription(selectedBot.description ?? "");
     setEditProvider(selectedBot.provider);
     setEditTemperature(selectedBot.temperature);
-    setEditTopK(selectedBot.top_k);
   }, [selectedBot]);
 
   async function refreshBots(showToast = false) {
@@ -152,7 +149,7 @@ export function AdminBotManager() {
         description: newBotDescription.trim() || undefined,
         provider: newBotProvider,
         temperature: newBotTemperature,
-        top_k: newBotTopK,
+        top_k: 5,
       });
       upsertBot(bot);
       setCurrentBotId(bot.id);
@@ -185,7 +182,7 @@ export function AdminBotManager() {
           description: editDescription,
           provider: editProvider,
           temperature: editTemperature,
-          top_k: editTopK,
+          top_k: 5,
         }
       );
       upsertBot(updated);
@@ -229,7 +226,7 @@ export function AdminBotManager() {
   return (
     <div className="space-y-6">
       {/* Active Bot Selector */}
-      <div className="space-y-3">
+      <div className="space-y-3 rounded-lg border bg-muted/20 p-4">
         <Label className="text-sm font-medium flex items-center gap-2">
           <Bot className="h-4 w-4 text-muted-foreground" />
           Active Bot
@@ -259,9 +256,6 @@ export function AdminBotManager() {
           <div className="flex flex-wrap gap-1.5">
             <Badge variant="secondary" className="text-xs font-medium">
               {selectedBot.provider}
-            </Badge>
-            <Badge variant="outline" className="text-xs">
-              top_k: {selectedBot.top_k}
             </Badge>
             <Badge variant="outline" className="text-xs">
               temp: {selectedBot.temperature}
@@ -432,34 +426,19 @@ export function AdminBotManager() {
                 className="resize-none transition-all duration-200 focus:ring-2 focus:ring-primary/20"
               />
             </div>
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="space-y-2">
-                <Label className="text-xs font-medium">Temperature</Label>
-                <Input
-                  type="number"
-                  min={0}
-                  max={2}
-                  step={0.1}
-                  value={newBotTemperature}
-                  onChange={(e) =>
-                    setNewBotTemperature(Number(e.target.value) || 0)
-                  }
-                  className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label className="text-xs font-medium">Top K</Label>
-                <Input
-                  type="number"
-                  min={1}
-                  max={50}
-                  value={newBotTopK}
-                  onChange={(e) =>
-                    setNewBotTopK(Number(e.target.value) || 1)
-                  }
-                  className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
-                />
-              </div>
+            <div className="space-y-2">
+              <Label className="text-xs font-medium">Temperature</Label>
+              <Input
+                type="number"
+                min={0}
+                max={2}
+                step={0.1}
+                value={newBotTemperature}
+                onChange={(e) =>
+                  setNewBotTemperature(Number(e.target.value) || 0)
+                }
+                className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
+              />
             </div>
             <Button
               type="submit"
@@ -526,34 +505,19 @@ export function AdminBotManager() {
                   className="resize-none transition-all duration-200 focus:ring-2 focus:ring-primary/20"
                 />
               </div>
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="space-y-2">
-                  <Label className="text-xs font-medium">Temperature</Label>
-                  <Input
-                    type="number"
-                    min={0}
-                    max={2}
-                    step={0.1}
-                    value={editTemperature}
-                    onChange={(e) =>
-                      setEditTemperature(Number(e.target.value) || 0)
-                    }
-                    className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-xs font-medium">Top K</Label>
-                  <Input
-                    type="number"
-                    min={1}
-                    max={50}
-                    value={editTopK}
-                    onChange={(e) =>
-                      setEditTopK(Number(e.target.value) || 1)
-                    }
-                    className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
-                  />
-                </div>
+              <div className="space-y-2">
+                <Label className="text-xs font-medium">Temperature</Label>
+                <Input
+                  type="number"
+                  min={0}
+                  max={2}
+                  step={0.1}
+                  value={editTemperature}
+                  onChange={(e) =>
+                    setEditTemperature(Number(e.target.value) || 0)
+                  }
+                  className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
+                />
               </div>
               <div className="flex flex-wrap gap-3 pt-1">
                 <Button
