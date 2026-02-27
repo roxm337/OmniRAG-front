@@ -62,7 +62,7 @@ export function HealthCard() {
   }
 
   return (
-    <Card className="transition-all duration-200 hover:shadow-md">
+    <Card className="transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
       <CardHeader className="pb-3">
         <CardTitle className="text-sm font-medium flex items-center gap-2">
           <div className="rounded-lg bg-slate-100 dark:bg-slate-800 p-2">
@@ -76,8 +76,11 @@ export function HealthCard() {
           {health ? (
             <div className="space-y-4 animate-scale-in">
               {/* Status indicator */}
-              <div className="flex items-center gap-2.5 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 p-3">
-                <CheckCircle2 className="h-5 w-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+              <div className="flex items-center gap-3 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 p-3">
+                <div className="relative shrink-0">
+                  <span className="absolute inset-0 animate-ping rounded-full bg-emerald-400/40" />
+                  <CheckCircle2 className="relative h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+                </div>
                 <div>
                   <p className="text-sm font-semibold text-emerald-700 dark:text-emerald-300">
                     Connected
@@ -90,8 +93,8 @@ export function HealthCard() {
 
               {/* Stats grid */}
               <div className="grid grid-cols-3 gap-3">
-                <div className="rounded-lg bg-muted/50 p-3 text-center">
-                  <Database className="h-4 w-4 text-muted-foreground mx-auto mb-1.5" />
+                <div className="group rounded-lg bg-muted/50 hover:bg-muted/80 p-3 text-center transition-colors duration-200">
+                  <Database className="h-4 w-4 text-muted-foreground mx-auto mb-1.5 group-hover:text-foreground/70 transition-colors duration-200" />
                   <p className="text-xs text-muted-foreground mb-0.5">
                     Collection
                   </p>
@@ -99,9 +102,9 @@ export function HealthCard() {
                     {health.collection}
                   </p>
                 </div>
-                <div className="rounded-lg bg-muted/50 p-3 text-center">
+                <div className="group rounded-lg bg-muted/50 hover:bg-muted/80 p-3 text-center transition-colors duration-200">
                   <svg
-                    className="h-4 w-4 text-muted-foreground mx-auto mb-1.5"
+                    className="h-4 w-4 text-muted-foreground mx-auto mb-1.5 group-hover:text-foreground/70 transition-colors duration-200"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -116,15 +119,15 @@ export function HealthCard() {
                     {health.vector_size.toLocaleString()}
                   </p>
                 </div>
-                <div className="rounded-lg bg-muted/50 p-3 text-center">
-                  <Server className="h-4 w-4 text-muted-foreground mx-auto mb-1.5" />
+                <div className="group rounded-lg bg-muted/50 hover:bg-muted/80 p-3 text-center transition-colors duration-200">
+                  <Server className="h-4 w-4 text-muted-foreground mx-auto mb-1.5 group-hover:text-foreground/70 transition-colors duration-200" />
                   <p className="text-xs text-muted-foreground mb-0.5">Bots</p>
                   <p className="text-sm font-semibold">{health.bots}</p>
                 </div>
               </div>
             </div>
           ) : (
-            <div className="flex items-center gap-2.5 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-3">
+            <div className="flex items-center gap-2.5 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-3 animate-scale-in">
               <XCircle className="h-5 w-5 text-red-500 dark:text-red-400 shrink-0" />
               <div>
                 <p className="text-sm font-semibold text-red-700 dark:text-red-300">
@@ -142,12 +145,12 @@ export function HealthCard() {
             size="sm"
             onClick={refreshHealth}
             disabled={checking}
-            className="w-full gap-2 transition-all duration-200"
+            className="w-full gap-2 transition-all duration-200 hover:bg-primary/5 hover:border-primary/30"
           >
             {checking ? (
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
             ) : (
-              <RefreshCw className="h-3.5 w-3.5" />
+              <RefreshCw className="h-3.5 w-3.5 transition-transform duration-300 hover:rotate-180" />
             )}
             Ping Backend
           </Button>
