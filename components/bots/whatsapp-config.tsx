@@ -46,7 +46,7 @@ export function WhatsAppConfigManager({ botId }: WhatsAppConfigManagerProps) {
   const [hasApiKey, setHasApiKey] = useState(false);
   const [hasWebhookSecret, setHasWebhookSecret] = useState(false);
 
-  const webhookUrl = `${apiBaseUrl.replace(/\/$/, "")}/v1/webhook/whatsapp/${botId}`;
+  const webhookUrl = `${apiBaseUrl.replace(/\/$/, "").replace(/\/api$/, "")}/v1/webhook/whatsapp/${botId}`;
 
   const fetchConfig = useCallback(async () => {
     if (!adminToken) return;
