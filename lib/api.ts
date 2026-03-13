@@ -48,8 +48,18 @@ async function request<T>(
     headers.set("Content-Type", "application/json");
   }
 
+  const isSecurePage = typeof window !== "undefined" && window.location.protocol === "https:";
+  const isHttpTarget = baseUrl.startsWith("http://");
+  const isLocalTarget = baseUrl.includes("localhost") || baseUrl.includes("127.0.0.1");
+
+  // Safety: if on HTTPS but calling HTTP (not localhost), use /api proxy fallback
+  let effectiveBaseUrl = baseUrl;
+  if (isSecurePage && isHttpTarget && !isLocalTarget) {
+    effectiveBaseUrl = "/api";
+  }
+
   try {
-    const response = await fetch(`${baseUrl.replace(/\/$/, "")}${path}`, {
+    const response = await fetch(`${effectiveBaseUrl.replace(/\/$/, "")}${path}`, {
       ...options,
       headers,
       signal: controller.signal,
@@ -239,7 +249,16 @@ export async function* chatStream(
   payload: { bot_id?: string; query: string; top_k?: number; provider?: LlmProvider },
   adminToken?: string,
 ): AsyncGenerator<StreamEvent> {
-  const url = `${baseUrl.replace(/\/$/, "")}/v1/chat/stream`;
+  const isSecurePage = typeof window !== "undefined" && window.location.protocol === "https:";
+  const isHttpTarget = baseUrl.startsWith("http://");
+  const isLocalTarget = baseUrl.includes("localhost") || baseUrl.includes("127.0.0.1");
+
+  let effectiveBaseUrl = baseUrl;
+  if (isSecurePage && isHttpTarget && !isLocalTarget) {
+    effectiveBaseUrl = "/api";
+  }
+
+  const url = `${effectiveBaseUrl.replace(/\/$/, "")}/v1/chat/stream`;
   const headers: Record<string, string> = { "Content-Type": "application/json" };
   if (adminToken) headers["X-Admin-Token"] = adminToken;
 

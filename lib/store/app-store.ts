@@ -183,23 +183,26 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: "omnirag-store",
-      version: 4,
+      version: 5,
       migrate: (persistedState, version) => {
         let state = persistedState as Record<string, any>;
         if (version < 2 && state && typeof state === "object") {
           delete state.adminToken;
           delete state.adminUser;
         }
-        if (state && typeof state === "object") {
-          const isSecure = typeof window !== "undefined" && window.location.protocol === "https:";
-          const apiIsHttp = state.apiBaseUrl?.startsWith("http://");
-          const apiIsLocal = state.apiBaseUrl?.includes("localhost") || state.apiBaseUrl?.includes("127.0.0.1");
 
-          // Force reset if it's local in prod, OR if it's insecure on a secure page
+        const isSecure = typeof window !== "undefined" && window.location.protocol === "https:";
+        const apiIsHttp = state.apiBaseUrl?.startsWith("http://");
+        const apiIsLocal = state.apiBaseUrl?.includes("localhost") || state.apiBaseUrl?.includes("127.0.0.1");
+
+        // Force reset if it's local in prod, OR if it's insecure on a secure page
+        // Specifically for version < 5 or any time we detect insecure URL on HTTPS
+        if (state && typeof state === "object") {
           if ((!IS_LOCALHOST && apiIsLocal) || (isSecure && apiIsHttp && !apiIsLocal)) {
             state.apiBaseUrl = DEFAULT_API_BASE;
           }
         }
+        
         return state as AppState;
       },
       partialize: (state) => ({
