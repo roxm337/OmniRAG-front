@@ -178,17 +178,18 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: "omnirag-store",
-      version: 3,
+      version: 4,
       migrate: (persistedState, version) => {
         let state = persistedState as Record<string, any>;
         if (version < 2 && state && typeof state === "object") {
           delete state.adminToken;
           delete state.adminUser;
         }
-        if (version < 3 && state && typeof state === "object") {
-          // Reset apiBaseUrl to force adoption of the new proxy (/api)
-          // especially if it was hardcoded to localhost:8000 or 8001
-          state.apiBaseUrl = DEFAULT_API_BASE;
+        if (version < 4 && state && typeof state === "object") {
+          // Force reset if it's still pointing to localhost in a production environment
+          if (state.apiBaseUrl?.includes("localhost")) {
+            state.apiBaseUrl = DEFAULT_API_BASE;
+          }
         }
         return state as AppState;
       },
