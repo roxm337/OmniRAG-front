@@ -6,7 +6,12 @@ import { persist } from "zustand/middleware";
 import type { ActionEvent, AdminUser, Bot, HealthResponse, LlmProvider } from "@/lib/types";
 import { createEventId } from "@/lib/utils";
 
-const DEFAULT_API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
+const IS_BROWSER = typeof window !== "undefined";
+const IS_LOCALHOST = IS_BROWSER && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
+
+const DEFAULT_API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE_URL ?? (IS_LOCALHOST ? "http://localhost:8000" : "/api");
+
 const MAX_HISTORY = 50;
 const ADMIN_TOKEN_COOKIE = "omnirag_admin_token";
 
@@ -185,9 +190,13 @@ export const useAppStore = create<AppState>()(
           delete state.adminToken;
           delete state.adminUser;
         }
-        if (version < 4 && state && typeof state === "object") {
-          // Force reset if it's still pointing to localhost in a production environment
-          if (state.apiBaseUrl?.includes("localhost")) {
+        if (state && typeof state === "object") {
+          const isSecure = typeof window !== "undefined" && window.location.protocol === "https:";
+          const apiIsHttp = state.apiBaseUrl?.startsWith("http://");
+          const apiIsLocal = state.apiBaseUrl?.includes("localhost") || state.apiBaseUrl?.includes("127.0.0.1");
+
+          // Force reset if it's local in prod, OR if it's insecure on a secure page
+          if ((!IS_LOCALHOST && apiIsLocal) || (isSecure && apiIsHttp && !apiIsLocal)) {
             state.apiBaseUrl = DEFAULT_API_BASE;
           }
         }
